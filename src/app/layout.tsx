@@ -1,4 +1,13 @@
 import type { Metadata } from "next";
+import { 
+  ClerkProvider,
+  ClerkLoading,
+  ClerkLoaded  
+} from "@clerk/nextjs";
+import Footer from "@/components/Footer";
+
+import StoreProvider from "./StoreProvider";
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -24,11 +33,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <ClerkProvider >
+        <StoreProvider>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            <ClerkLoading>
+              <div>Loading</div>
+            </ClerkLoading>
+            <ClerkLoaded>
+                {children}
+                <Footer></Footer>
+            </ClerkLoaded>
+          </body>
+        </StoreProvider>
+      </ClerkProvider>
     </html>
   );
 }
