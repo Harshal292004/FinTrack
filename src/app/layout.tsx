@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
-import { 
-  ClerkProvider,
-  ClerkLoading,
-  ClerkLoaded  
-} from "@clerk/nextjs";
 import Footer from "@/components/Footer";
-
+import Navbar from "@/components/Navbar";
 import StoreProvider from "./StoreProvider";
-
+import { SidebarProvider,SidebarTrigger } from "@/components/ui/sidebar";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -33,21 +28,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ClerkProvider >
         <StoreProvider>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
-            <ClerkLoading>
-              <div>Loading</div>
-            </ClerkLoading>
-            <ClerkLoaded>
+              className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            >
+              <SidebarProvider>    
+                <Navbar></Navbar>
                 {children}
-                <Footer></Footer>
-            </ClerkLoaded>
-          </body>
+              </SidebarProvider>
+              <Footer></Footer>
+            </body>
         </StoreProvider>
-      </ClerkProvider>
     </html>
   );
 }
