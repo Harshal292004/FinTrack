@@ -89,7 +89,7 @@ export function loginUser(user: { name: string }) {
   };
 }
 
-export function updateUser({ id, name }: { id: mongoose.Types.ObjectId; name: string }) {
+export function updateUser({ id, name }: { id: mongoose.Schema.Types.ObjectId; name: string }) {
   return async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
     try {
@@ -103,7 +103,7 @@ export function updateUser({ id, name }: { id: mongoose.Types.ObjectId; name: st
   };
 }
 
-export function deleteUser({ id }: { id: mongoose.Types.ObjectId }) {
+export function deleteUser({ id }: { id: mongoose.Schema.Types.ObjectId }) {
   return async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
     try {
