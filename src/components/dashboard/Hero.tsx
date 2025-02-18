@@ -1,12 +1,9 @@
-"use client"
 import React from 'react'
 import { TableDemo } from './RecentTransactions'
 import { Component } from './MonthlyExpenseChart'
 import { Button } from '../ui/button'
-import { Plus } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import AddExpenseButton from '../AddExpenseButton'
 const Hero = () => {
-    const router= useRouter()
            
   return (
     <div className='w-full h-full mt-28'>
@@ -28,8 +25,7 @@ const Hero = () => {
         <TableDemo></TableDemo>
 
         {/*button at the button right corner for adding deleting editing transactions*/}
-        <Plus className='w-16 h-16 fixed bottom-5 right-5 rounded-full bg-black text-white p-2 hover:bg-slate-500 transition-all' onClick={()=>{router.push('/expenses/add')}} ></Plus>
-        
+        <AddExpenseButton></AddExpenseButton>
     </div>
   )
 }

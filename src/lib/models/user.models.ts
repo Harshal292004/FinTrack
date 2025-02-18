@@ -1,21 +1,21 @@
-import mongoose,{ Schema,Document,Model } from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
 
-export interface IUser extends Document{
-    clerk_id:string;
-    email_address:string;
-    usename:string;
-    first_name:string;
+export interface IUser extends Document {
+  transactionId?: mongoose.Schema.Types.ObjectId;
+  name: string;
 }
 
-const UserSchema:Schema= new Schema(
-    {
-        clerk_id:{type:String, required:true, unique:true},
-        email_addtess:{type:String, required:true, unique:true},
-        username:{type:String, required:true,unique:true},
-        first_name:{type :String, required:true}
+const userSchema = new Schema<IUser>(
+  {
+    transactionId: {
+      type: Schema.Types.ObjectId,
+      ref: "Transaction",
+      unique: true,
     },
-    {timestamps:true}
-)
+    name: { type: String, required: true, unique: true },
+  },
+  { timestamps: true }
+);
 
-export const User:Model<IUser> = (mongoose.models.User as Model<IUser>) || mongoose.model<IUser>("user",UserSchema)
-
+export const User: Model<IUser> =
+  (mongoose.models.User  as Model<IUser>)|| mongoose.model<IUser>("User", userSchema);
