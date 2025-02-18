@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { IUser } from "@/lib/models/user.models";
 import { AppDispatch } from "@/lib/store";
+import { setTransaction } from "../transaction/transactionSlice";
 import mongoose from "mongoose";
 import {
   registerUserAction,
@@ -42,6 +43,10 @@ const userSlice = createSlice({
       state.user = null;
       state.error = null;
     },
+    setLogout:(state)=>{
+      state.user=null;
+      state.error= null;
+    },
     setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
     },
@@ -51,7 +56,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { setRegister, setLogin, setUpdate, setDelete, setError, setLoading } = userSlice.actions;
+export const { setRegister, setLogin, setUpdate, setDelete, setError, setLoading ,setLogout} = userSlice.actions;
 export const userReducer=userSlice.reducer
 
 export function registerUser(user: { name: string }) {
@@ -60,6 +65,7 @@ export function registerUser(user: { name: string }) {
     try {
       const data = await registerUserAction(user);
       dispatch(setRegister(data.user));
+      dispatch(setTransaction(data.transaction));
     } catch (error: any) {
       dispatch(setError(error.message || "Registration error"));
     } finally {
@@ -74,6 +80,7 @@ export function loginUser(user: { name: string }) {
     try {
       const data = await loginUserAction(user);
       dispatch(setLogin(data.user));
+      dispatch(setTransaction(data.transaction))
     } catch (error: any) {
       dispatch(setError(error.message || "Login error"));
     } finally {

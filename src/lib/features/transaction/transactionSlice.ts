@@ -40,12 +40,12 @@ export const { setTransaction, setError, setLoading } = transactionSlice.actions
 export const transactionReducer= transactionSlice.reducer;
 
 export function addTransaction({
-  user_id,
+  transaction_id,
   amount,
   date,
   description,
 }: {
-  user_id: mongoose.Types.ObjectId;
+  transaction_id: mongoose.Types.ObjectId;
   amount: number;
   date: Date;
   description: string;
@@ -53,7 +53,7 @@ export function addTransaction({
   return async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
     try {
-      const data = await addTransactionAction({ user_id, amount, date, description });
+      const data = await addTransactionAction({ transaction_id, amount, date, description });
       dispatch(setTransaction(data.transaction));
     } catch (error: any) {
       dispatch(setError(error.message || "Error adding transaction"));
@@ -68,20 +68,18 @@ export function updateTransaction({
   index,
   amount,
   date,
-  description,
-  ai_analysis,
+  description
 }: {
   transaction_id: mongoose.Types.ObjectId;
   index: number;
   amount?: number;
   date?: Date;
   description?: string;
-  ai_analysis?: string;
 }) {
   return async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
     try {
-      const data = await updateTransactionAction({ transaction_id, index, amount, date, description, ai_analysis });
+      const data = await updateTransactionAction({ transaction_id, index, amount, date, description });
       dispatch(setTransaction(data.transaction));
     } catch (error: any) {
       dispatch(setError(error.message || "Error updating transaction"));
@@ -111,22 +109,4 @@ export function deleteTransaction({
   };
 }
 
-export function getTransaction({
-  transaction_id,
-  index,
-}: {
-  transaction_id: mongoose.Types.ObjectId;
-  index?: number;
-}) {
-  return async (dispatch: AppDispatch) => {
-    dispatch(setLoading(true));
-    try {
-      const data = await getTransactionAction({ transaction_id, index });
-      dispatch(setTransaction(data.transaction));
-    } catch (error: any) {
-      dispatch(setError(error.message || "Error getting transaction"));
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-}
+

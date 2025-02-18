@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
 export async function addTransactionAction({
-  user_id,
+  transaction_id,
   amount,
   date,
   description,
 }: {
-  user_id: mongoose.Types.ObjectId;
+  transaction_id: mongoose.Types.ObjectId;
   amount: number;
   date: Date;
   description: string;
@@ -14,7 +14,7 @@ export async function addTransactionAction({
   const response = await fetch("/api/transactions/add", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ user_id, amount, date, description }),
+    body: JSON.stringify({ transaction_id, amount, date, description }),
   });
   const data = await response.json();
   if (!response.ok) {
@@ -29,19 +29,17 @@ export async function updateTransactionAction({
   amount,
   date,
   description,
-  ai_analysis,
 }: {
   transaction_id: mongoose.Types.ObjectId;
   index: number;
   amount?: number;
   date?: Date;
-  description?: string;
-  ai_analysis?: string;
+  description?: string; 
 }) {
   const response = await fetch("/api/transactions/update", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ transaction_id, index, amount, date, description, ai_analysis }),
+    body: JSON.stringify({ transaction_id, index, amount, date, description }),
   });
   const data = await response.json();
   if (!response.ok) {

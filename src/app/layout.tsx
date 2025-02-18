@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import StoreProvider from "./StoreProvider";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -36,7 +35,6 @@ export default function RootLayout({
                 <Navbar></Navbar>
                 {children}
               </SidebarProvider>
-              <Footer></Footer>
             </body>
         </StoreProvider>
     </html>

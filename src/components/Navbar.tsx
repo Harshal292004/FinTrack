@@ -38,7 +38,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "next-themes";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { registerUser, loginUser } from "@/lib/features/user/userSlice";
+import { registerUser, loginUser ,setLogout} from "@/lib/features/user/userSlice";
 import { z } from "zod";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -122,12 +122,7 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    // Dispatch a logout action or clear the user slice as needed.
-    // For this example, we assume a simple action is available.
-    // dispatch(logoutUser());
-    // Alternatively, if not using Redux for logout, you can handle it locally.
-    // For now, we’ll simply reload the page.
-    window.location.reload();
+    dispatch(setLogout())
   };
 
   return (

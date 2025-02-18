@@ -20,26 +20,26 @@ export async function PUT(request: Request) {
         { status: 400 }
       );
     }
-    const transactionDoc = await Transaction.findById(transaction_id);
-    if (!transactionDoc) {
+    const transaction = await Transaction.findById(transaction_id);
+    if (!transaction) {
       return NextResponse.json(
         { success: false, error: "Transaction document not found" },
         { status: 404 }
       );
     }
-    if (index < 0 || index >= transactionDoc.transaction_list.length) {
+    if (index < 0 || index >= transaction.transaction_list.length) {
       return NextResponse.json(
         { success: false, error: "Invalid transaction index" },
         { status: 400 }
       );
     }
-    // Update provided fields
-    if (amount !== undefined) transactionDoc.transaction_list[index].amount = amount;
-    if (date) transactionDoc.transaction_list[index].date = date;
-    if (description) transactionDoc.transaction_list[index].description = description;
-    await transactionDoc.save();
+    // update provided fields
+    if (amount !== undefined) transaction.transaction_list[index].amount = amount;
+    if (date) transaction.transaction_list[index].date = date;
+    if (description) transaction.transaction_list[index].description = description;
+    await transaction.save();
     return NextResponse.json(
-      { success: true, transaction: transactionDoc },
+      { success: true, transaction: transaction },
       { status: 200 }
     );
   } catch (error: any) {

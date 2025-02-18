@@ -10,7 +10,6 @@ const userSchema = new Schema<IUser>(
     transactionId: {
       type: Schema.Types.ObjectId,
       ref: "Transaction",
-      unique: true,
     },
     name: { type: String, required: true, unique: true },
   },
@@ -18,4 +17,5 @@ const userSchema = new Schema<IUser>(
 );
 
 export const User: Model<IUser> =
-  (mongoose.models.User  as Model<IUser>)|| mongoose.model<IUser>("User", userSchema);
+  (mongoose.models.User as Model<IUser>) ||
+  mongoose.model<IUser>("User", userSchema);

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/db";
 import { User } from "@/lib/models/user.models";
 import mongoose from "mongoose";
+import { Transaction } from "@/lib/models/transaction.models";
 
 export async function DELETE(request: Request) {
   try {
@@ -20,7 +21,12 @@ export async function DELETE(request: Request) {
         { status: 400 }
       );
     }
+    //delete user
     const deletedUser = await User.findByIdAndDelete(id);
+    
+    //delte transactions
+    const deletedTransactiion= await Transaction.findByIdAndDelete(deletedUser?.transactionId)
+
     if (!deletedUser) {
       return NextResponse.json(
         { success: false, error: "User not found" },
@@ -28,7 +34,7 @@ export async function DELETE(request: Request) {
       );
     }
     return NextResponse.json(
-      { success: true, message: "User deleted successfully" },
+      { success: true, message: `User ${deletedUser.name} deleted successfully` },
       { status: 200 }
     );
   } catch (error: any) {

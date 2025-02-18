@@ -20,23 +20,23 @@ export async function DELETE(request: Request) {
         { status: 400 }
       );
     }
-    const transactionDoc = await Transaction.findById(transaction_id);
-    if (!transactionDoc) {
+    const transaction = await Transaction.findById(transaction_id);
+    if (!transaction) {
       return NextResponse.json(
         { success: false, error: "Transaction document not found" },
         { status: 404 }
       );
     }
-    if (index < 0 || index >= transactionDoc.transaction_list.length) {
+    if (index < 0 || index >= transaction.transaction_list.length) {
       return NextResponse.json(
         { success: false, error: "Invalid transaction index" },
         { status: 400 }
       );
     }
-    transactionDoc.transaction_list.splice(index, 1);
-    await transactionDoc.save();
+    transaction.transaction_list.splice(index, 1);
+    await transaction.save();
     return NextResponse.json(
-      { success: true, transaction: transactionDoc },
+      { success: true, transaction: transaction },
       { status: 200 }
     );
   } catch (error: any) {

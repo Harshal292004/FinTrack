@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 export interface ITransactionEntry {
   amount: number;
   date: Date;
-  description: string;
+  description?: string;
 }
 
 export interface ITransaction extends Document {
@@ -15,14 +15,18 @@ const TransactionEntrySchema = new Schema<ITransactionEntry>(
   {
     amount: { type: Number, required: true },
     date: { type: Date, required: true },
-    description: { type: String, required: true },
+    description: { type: String },
   },
-  { _id: false } // prevents auto-creation of _id for each subdocument
+  { _id: false }
 );
 
 const transactionSchema = new Schema<ITransaction>(
   {
-    userId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+    userId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
     transaction_list: { type: [TransactionEntrySchema], default: [] },
   },
   { timestamps: true }
@@ -31,4 +35,3 @@ const transactionSchema = new Schema<ITransaction>(
 export const Transaction: Model<ITransaction> =
   (mongoose.models.Transaction as Model<ITransaction>) ||
   mongoose.model<ITransaction>("Transaction", transactionSchema);
-
