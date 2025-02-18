@@ -144,15 +144,15 @@ const ExpensesPage = () => {
                   <div className="flex items-center gap-2 mb-2">
                     <DollarSign
                       className={`h-5 w-5 ${
-                        transaction.amount >= 0 ? "text-green-500 dark:text-green-400" : "text-red-500 dark:text-red-400"
+                        transaction.amount >= 0 ? "text-green-600 dark:text-green-400" : "text-red-500 dark:text-red-400"
                       }`}
                     />
                     <span
                       className={`${robotoMono.className} text-lg font-semibold ${
-                        transaction.amount >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+                        transaction.amount >= 0 ? "text-green-600 dark:text-green-400" : "text-red-500 dark:text-red-400"
                       }`}
                     >
-                      ${Math.abs(transaction.amount).toFixed(2)}
+                    {Math.abs(transaction.amount).toFixed(2)}
                     </span>
                   </div>
                   <p className={`${inter.className} text-sm text-zinc-700 dark:text-zinc-300 mb-2`}>
