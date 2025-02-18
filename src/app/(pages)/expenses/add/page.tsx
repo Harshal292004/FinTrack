@@ -8,7 +8,6 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Types } from "mongoose";
 import {
   Form,
   FormControl,
@@ -71,7 +70,7 @@ const AddExpensePage = () => {
   useEffect(
     ()=>{
         if(transaction.loading){
-            setLoading(transaction.transaction.loading)
+            setLoading(transaction.loading)
         }
         if(transaction.error){
             setLocalError(transaction.error)
@@ -85,14 +84,16 @@ const AddExpensePage = () => {
             amount: parseFloat(values.amount),
             date: new Date(values.date)
           };
-            
-          dispatch(addTransaction({
-            transaction_id: transaction.transaction._id as unknown as Types.ObjectId,
-            amount: formattedData.amount,
-            date: formattedData.date,
-            description: formattedData.description
-          }));
-              
+          if(transaction.transaction){
+
+            dispatch(addTransaction({
+              transaction_id: transaction.transaction._id ,
+              amount: formattedData.amount,
+              date: formattedData.date,
+              description: formattedData.description
+            }));
+                
+          }
       router.push('/expenses');
     } catch (error) {
       console.error("Error submitting expense:", error);

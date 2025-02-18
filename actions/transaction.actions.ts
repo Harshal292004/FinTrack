@@ -6,7 +6,7 @@ export async function addTransactionAction({
   date,
   description,
 }: {
-  transaction_id: mongoose.Types.ObjectId;
+  transaction_id: mongoose.Schema.Types.ObjectId;
   amount: number;
   date: Date;
   description: string;
@@ -17,6 +17,7 @@ export async function addTransactionAction({
     body: JSON.stringify({ transaction_id, amount, date, description }),
   });
   const data = await response.json();
+  console.log(data.transaction)
   if (!response.ok) {
     throw new Error(data.error || "Failed to add transaction");
   }
@@ -30,7 +31,7 @@ export async function updateTransactionAction({
   date,
   description,
 }: {
-  transaction_id: mongoose.Types.ObjectId;
+  transaction_id: mongoose.Schema.Types.ObjectId;
   index: number;
   amount?: number;
   date?: Date;
@@ -52,7 +53,7 @@ export async function deleteTransactionAction({
   transaction_id,
   index,
 }: {
-  transaction_id: mongoose.Types.ObjectId;
+  transaction_id: mongoose.Schema.Types.ObjectId;
   index: number;
 }) {
   const response = await fetch("/api/transactions/delete", {
@@ -63,6 +64,25 @@ export async function deleteTransactionAction({
   const data = await response.json();
   if (!response.ok) {
     throw new Error(data.error || "Failed to delete transaction");
+  }
+  return data;
+}
+
+export async function getTransactionsAction(
+  {
+    transaction_id
+  }:{
+    transaction_id:mongoose.Schema.Types.ObjectId
+  }
+){
+  const response=await fetch("/api/transactions/get-transactions",{
+    method:"GET",
+    headers: { "Content-Type": "application/json" },
+    body:JSON.stringify({transaction_id})
+  })
+  const data= await response.json()
+  if(!response.ok){
+    throw new Error(data.error ||  'Failed to delete transaction') 
   }
   return data;
 }

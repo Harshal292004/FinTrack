@@ -30,7 +30,7 @@ export async function updateUserAction({
   id,
   name,
 }: {
-  id: mongoose.Types.ObjectId;
+  id: mongoose.Schema.Types.ObjectId;
   name: string;
 }) {
   const response = await fetch("/api/users/update", {
@@ -45,7 +45,7 @@ export async function updateUserAction({
   return data;
 }
 
-export async function deleteUserAction({ id }: { id: mongoose.Types.ObjectId }) {
+export async function deleteUserAction({ id }: { id: mongoose.Schema.Types.ObjectId }) {
   const response = await fetch("/api/users/delete", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },

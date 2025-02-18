@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { IUser } from "@/lib/models/user.models";
+import type { TUser } from "../../../../types";
 import { AppDispatch } from "@/lib/store";
 import { setTransaction } from "../transaction/transactionSlice";
 import mongoose from "mongoose";
@@ -12,7 +12,7 @@ import {
 
 
 export interface UserState {
-  user: IUser | null;
+  user:TUser| null;
   loading: boolean;
   error: string | null;
 }

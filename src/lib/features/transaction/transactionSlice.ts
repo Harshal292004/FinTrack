@@ -5,10 +5,11 @@ import {
   addTransactionAction,
   updateTransactionAction,
   deleteTransactionAction,
+  getTransactionsAction,
 } from "../../../../actions/transaction.actions"
-
+import type { TTransaction } from "../../../../types";
 export interface TransactionState {
-  transaction: any; // Ideally type this as your ITransaction or a custom type
+  transaction: TTransaction|null;
   loading: boolean;
   error: string | null;
 }
@@ -45,7 +46,7 @@ export function addTransaction({
   date,
   description,
 }: {
-  transaction_id: mongoose.Types.ObjectId;
+  transaction_id: mongoose.Schema.Types.ObjectId;
   amount: number;
   date: Date;
   description: string;
@@ -70,7 +71,7 @@ export function updateTransaction({
   date,
   description
 }: {
-  transaction_id: mongoose.Types.ObjectId;
+  transaction_id: mongoose.Schema.Types.ObjectId;
   index: number;
   amount?: number;
   date?: Date;
@@ -93,7 +94,7 @@ export function deleteTransaction({
   transaction_id,
   index,
 }: {
-  transaction_id: mongoose.Types.ObjectId;
+  transaction_id: mongoose.Schema.Types.ObjectId;
   index: number;
 }) {
   return async (dispatch: AppDispatch) => {
@@ -110,3 +111,20 @@ export function deleteTransaction({
 }
 
 
+export function getTransactions({
+  transaction_id,
+}: {
+  transaction_id: mongoose.Schema.Types.ObjectId;
+}) {
+  return async (dispatch: AppDispatch) => {
+    dispatch(setLoading(true));
+    try {
+      const data = await getTransactionsAction({ transaction_id });
+      dispatch(setTransaction(data.transaction));
+    } catch (error: any) {
+      dispatch(setError(error.message || "Error fetching transactions"));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+}
