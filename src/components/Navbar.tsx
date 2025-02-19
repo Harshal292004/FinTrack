@@ -22,7 +22,7 @@ import {
   Search,
   Mic,
   X,
-  Loader2
+  Loader2,
 } from "lucide-react";
 
 // Component imports
@@ -102,7 +102,7 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
       });
     }
   }, [bodyRef, dispatch]);
-  
+
   // Handle Auth Action
   const handleAuthAction = (mode: "Register" | "Login") => {
     setAuthMode(mode);
@@ -174,15 +174,17 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
         className="fixed top-0 w-full h-16 md:h-20 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md"
       >
         <div className="h-full px-4 sm:px-6 flex items-center justify-between">
-          <motion.div
-            className={`flex items-center gap-3 ${
-              sidebarOpen ? "opacity-0" : "opacity-100"
-            }`}
-            animate={{ x: sidebarOpen ? -250 : 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Logo />
-          </motion.div>
+          <Link href={"/"} className="cursor-pointer">
+            <motion.div
+              className={`flex items-center gap-3 ${
+                sidebarOpen ? "opacity-0" : "opacity-100"
+              }`}
+              animate={{ x: sidebarOpen ? -250 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Logo />
+            </motion.div>
+          </Link>
 
           <div className="flex items-center gap-4">
             <Button
@@ -284,7 +286,9 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
               <div className="h-full bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800">
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-6">
-                    <Logo />
+                    <Link href={"/"} className="cursor-pointer">
+                      <Logo />
+                    </Link>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -317,36 +321,38 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
 
                 {/* Sidebar Footer */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 ">
-                  
                   {isLoggedIn ? (
-                       <motion.button
-                       disabled={userState.loading}
-                       onClick={() => dispatch(setLogout())}
-                       initial={{ x: -20, opacity: 0 }}
-                       animate={{ x: 0, opacity: 1 }}
-                       transition={{ delay: 0.1 }}
-                       className={`
+                    <motion.button
+                      disabled={userState.loading}
+                      onClick={() => dispatch(setLogout())}
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: 0.1 }}
+                      className={`
                          w-full
                          flex justify-center items-center gap-2 
                          px-4 py-2 
                          rounded-lg
                          transition-all duration-200
-                         ${userState.loading 
-                           ? 'opacity-70 cursor-not-allowed' 
-                           : 'hover:bg-red-100 dark:hover:bg-red-500/20'
+                         ${
+                           userState.loading
+                             ? "opacity-70 cursor-not-allowed"
+                             : "hover:bg-red-100 dark:hover:bg-red-500/20"
                          }
                          bg-white dark:bg-zinc-800
                          text-red-600 dark:text-red-400
                          ${poppins.className}
                        `}
-                     >
-                       {userState.loading ? (
-                         <Loader2 className="h-5 w-5 animate-spin" />
-                       ) : (
-                         <LogOut className="h-5 w-5" />
-                       )}
-                       <span>{userState.loading ? "Logging out..." : "Logout"}</span>
-                     </motion.button>
+                    >
+                      {userState.loading ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        <LogOut className="h-5 w-5" />
+                      )}
+                      <span>
+                        {userState.loading ? "Logging out..." : "Logout"}
+                      </span>
+                    </motion.button>
                   ) : (
                     <div className="flex flex-col gap-2 md:hidden">
                       <Button
@@ -381,7 +387,7 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
       </AnimatePresence>
 
       {/* Auth Dialog */}
-      <AlertDialog  open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
+      <AlertDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
         <AlertDialogContent className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
           <AlertDialogHeader>
             <AlertDialogTitle
