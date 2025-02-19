@@ -69,6 +69,7 @@ import { INavbarProps } from "../../types";
 
 import { Logo } from "./Logo";
 import { setTheme } from "@/lib/features/themes/themeSlice";
+import AddExpenseDialog from "./AddExpenseDialog";
 
 const Navbar = ({ bodyRef }: INavbarProps) => {
   // Dispatch for login and registration
@@ -448,6 +449,13 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Add Expense Button all over the application*/}
+      {
+        isLoggedIn?
+        <AddExpenseDialog></AddExpenseDialog>
+        :null
+      }
     </div>
   );
 };

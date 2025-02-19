@@ -25,8 +25,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-// Add Expense UI 
-import AddExpenseDialog from "../AddExpenseDialog";
 
 
 // Redux for state management 
@@ -143,17 +141,13 @@ const ExpensesPage = () => {
         </p>
       </div>
       <div className={`${space_mono}  justify-center items-center w-full`}> No Transactions Found ... </div>
-      <AddExpenseDialog></AddExpenseDialog>
+     
     </div>
     )
   }
 
   return (
     <div className="p-6 max-w-4xl mx-auto mt-20">
-
-      {/* Add Expense Dialog */}
-      <AddExpenseDialog></AddExpenseDialog>
-
       <div className={`${poppins.className} mb-6`}>
         <h1 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-100">Expenses</h1>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
