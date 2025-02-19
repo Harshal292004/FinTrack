@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Inter, Poppins, Roboto_Mono, Bebas_Neue } from "next/font/google";
+import { roboto_mono,bebas_neue,poppins,inter } from "@/lib/fonts";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -41,10 +41,6 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { registerUser, loginUser ,setLogout} from "@/lib/features/user/userSlice";
 import { z } from "zod";
 
-const inter = Inter({ subsets: ["latin"] });
-const poppins = Poppins({ weight: ["400", "600"], subsets: ["latin"] });
-const robotoMono = Roboto_Mono({ weight: ["400", "600"], subsets: ["latin"] });
-const bebasNeue = Bebas_Neue({ weight: "400", subsets: ["latin"] });
 
 const items = [
   {
@@ -217,7 +213,7 @@ const Navbar = () => {
                     className="transition-transform duration-300 hover:scale-110"
                   />
                   <h1
-                    className={`${bebasNeue.className} tracking-widest text-xl font-bold text-green-600 dark:text-orange-500`}
+                    className={`${bebas_neue.className} tracking-widest text-xl font-bold text-green-600 dark:text-orange-500`}
                   >
                     Fin Track
                   </h1>
@@ -260,7 +256,7 @@ const Navbar = () => {
                           }`}
                         />
                         <span
-                          className={`${robotoMono.className} ${
+                          className={`${roboto_mono.className} ${
                             selectedPath(item.url) ? "font-semibold" : "font-normal"
                           }`}
                         >
