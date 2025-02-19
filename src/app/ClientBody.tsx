@@ -14,22 +14,17 @@ export default function ClientBody({
   const bodyRef = useRef<HTMLBodyElement | null>(null);
 
   return (
-
- <StoreProvider>
-        
-        <SidebarProvider>
-                <body
-      ref={bodyRef}
-      className={`${geist_sans.variable} ${geist_mono.variable}`}
-    >
-      {/* Pass bodyRef to Navbar */}
-      <Navbar bodyRef={bodyRef} />
-      {children}
-    </body>
-    </SidebarProvider>
-   
- </StoreProvider>
-        
-         
+    <StoreProvider>
+      <SidebarProvider defaultOpen={false}>
+        <body
+          ref={bodyRef}
+          className={`${geist_sans.variable} ${geist_mono.variable}`}
+        >
+          {/* Pass bodyRef to Navbar */}
+          <Navbar bodyRef={bodyRef} />
+          {children}
+        </body>
+      </SidebarProvider>
+    </StoreProvider>
   );
 }

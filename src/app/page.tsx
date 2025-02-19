@@ -1,11 +1,9 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { roboto_mono, bebas_neue, poppins, inter } from "@/lib/fonts";
-import { ChevronRight, BarChart3, FolderKanban, Wallet, Github } from "lucide-react";
+import { bebas_neue, poppins, inter } from "@/lib/fonts";
+import { BarChart3, FolderKanban, Wallet, Github } from "lucide-react";
 
 const HomePage = () => {
   const fadeIn = {
