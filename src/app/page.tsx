@@ -38,7 +38,8 @@ const HomePage = () => {
     { name: "Framer Motion", description: "Smooth animations" },
     { name: "shadcn/ui", description: "Pre-built components" },
     { name: "Recharts", description: "Beautiful graphs" },
-    { name: "Redux", description: "State management" }
+    { name: "Redux", description: "State management" },
+    { name: "MongoDB", description: "Data Base"}
   ];
 
   return (
