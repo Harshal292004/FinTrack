@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react"
 import ClientBody from "./ClientBody";
-
 export const metadata: Metadata = {
   title: "Fin Track",
   description: "Manage your finance the smart way",
@@ -15,7 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <ClientBody>{children}</ClientBody>
+      <ClientBody>
+        {children}
+        <Analytics></Analytics>
+      </ClientBody>
     </html>
   );
 }
