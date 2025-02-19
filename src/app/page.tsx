@@ -73,13 +73,6 @@ const HomePage = () => {
             >
               <Button
                 size="lg"
-                className="bg-green-500 hover:bg-green-600 dark:bg-orange-500 dark:hover:bg-orange-600"
-              >
-                Get Started
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button
-                size="lg"
                 variant="outline"
                 className="border-zinc-200 dark:border-zinc-800"
               >
