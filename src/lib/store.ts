@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { userReducer } from "./features/user/userSlice";
 import { transactionReducer } from "./features/transaction/transactionSlice";
+import { themeReducer } from "./features/themes/themeSlice";
 export const makeStore = () => {
   return configureStore({
     reducer: {
       userReducer,
-      transactionReducer
+      transactionReducer,
+      themeReducer
     },
   });
 };

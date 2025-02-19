@@ -172,14 +172,11 @@ const ExpensesPage = () => {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <DollarSign
-                      className={`h-5 w-5 ${
-                        transaction.amount >= 0 ? "text-green-600 dark:text-green-400" : "text-red-500 dark:text-red-400"
-                      }`}
+                      className="h-5 w-5  text-green-700 dark:text-orange-500"
                     />
                     <span
-                      className={`${roboto_mono.className} text-lg font-semibold ${
-                        transaction.amount >= 0 ? "text-green-600 dark:text-green-400" : "text-red-500 dark:text-red-400"
-                      }`}
+                      className={`${roboto_mono.className} text-lg font-semibold h-5 w-5   text-green-700 dark:text-orange-500`
+                    }
                     >
                     {Math.abs(transaction.amount).toFixed(2)}
                     </span>

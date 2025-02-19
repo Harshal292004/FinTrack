@@ -12,7 +12,6 @@
     "react-is": "^19.0.0-rc-69d4b800-20241021"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.11.3",
     "@hookform/resolvers": "^4.1.0",
     "@radix-ui/react-alert-dialog": "^1.1.6",
     "@radix-ui/react-dialog": "^1.1.6",

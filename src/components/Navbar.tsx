@@ -68,6 +68,7 @@ import { NAVIGATION_ITEMS } from "@/lib/constants";
 import { INavbarProps } from "../../types";
 
 import { Logo } from "./Logo";
+import { setTheme } from "@/lib/features/themes/themeSlice";
 
 const Navbar = ({ bodyRef }: INavbarProps) => {
   // Dispatch for login and registration
@@ -90,10 +91,18 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
   const toggleDarkMode = useCallback(() => {
     if (bodyRef.current) {
       bodyRef.current.classList.toggle("dark");
-      setIsDark((prev) => !prev);
+      setIsDark((prev) => {
+        const newDarkState = !prev;
+        if (newDarkState) {
+          dispatch(setTheme("dark"));
+        } else {
+          dispatch(setTheme("bright"));
+        }
+        return newDarkState;
+      });
     }
-  }, [bodyRef]);
-
+  }, [bodyRef, dispatch]);
+  
   // Handle Auth Action
   const handleAuthAction = (mode: "Register" | "Login") => {
     setAuthMode(mode);
