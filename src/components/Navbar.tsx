@@ -1,17 +1,11 @@
 "use client";
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import { bebas_neue, poppins, inter } from "@/lib/fonts";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import {
-  Sidebar,
-  SidebarHeader,
-  SidebarContent,
-  SidebarFooter,
-  useSidebar,
-} from "@/components/ui/sidebar";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,6 +28,7 @@ import {
   User as UserIcon,
   Search,
   Mic,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,27 +40,11 @@ import {
 } from "@/lib/features/user/userSlice";
 import { z } from "zod";
 
-const items = [
-  {
-    title: "Home",
-    url: "/",
-    icon: Home,
-  },
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Categories",
-    url: "/categories",
-    icon: ChartColumnStacked,
-  },
-  {
-    title: "Expenses",
-    url: "/expenses",
-    icon: HandCoins,
-  },
+const navigationItems = [
+  { title: "Home", url: "/", icon: Home },
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Categories", url: "/categories", icon: ChartColumnStacked },
+  { title: "Expenses", url: "/expenses", icon: HandCoins },
 ];
 
 const nameSchema = z.object({
@@ -80,11 +59,17 @@ const Navbar = ({ bodyRef }: NavbarProps) => {
   const dispatch = useAppDispatch();
   const userState = useAppSelector((state) => state.userReducer);
   const isLoggedIn = Boolean(userState.user);
+  const pathname = usePathname();
 
-  const { open, setOpen, openMobile, setOpenMobile } = useSidebar();
-
+  // State
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [name, setName] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"Register" | "Login">("Register");
 
+  // Handlers
   const toggleDarkMode = useCallback(() => {
     if (bodyRef.current) {
       bodyRef.current.classList.toggle("dark");
@@ -92,46 +77,72 @@ const Navbar = ({ bodyRef }: NavbarProps) => {
     }
   }, [bodyRef]);
 
-  const [name, setName] = useState("");
-  const [localError, setLocalError] = useState("");
-  const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState("Register");
-
-  const pathname = usePathname();
-  const selectedPath = (url: string) => url === pathname;
-
-  useEffect(() => {
-    if (userState.error) {
-      setLocalError(userState.error);
-    }
-  }, [userState.error]);
-
-  const handleRegisterLogin = (action: "Register" | "Login") => {
-    setDialogTitle(action);
-    setLocalError("");
+  const handleAuthAction = (mode: "Register" | "Login") => {
+    setAuthMode(mode);
+    setAuthError("");
     setName("");
-    setRegisterDialogOpen(true);
+    setAuthDialogOpen(true);
   };
 
-  const handleSubmit = () => {
+  const handleAuthSubmit = () => {
     const result = nameSchema.safeParse({ name });
     if (!result.success) {
-      setLocalError(result.error.errors[0].message);
+      setAuthError(result.error.errors[0].message);
       return;
     }
-    setLocalError("");
-
-    if (dialogTitle === "Register") {
+    
+    if (authMode === "Register") {
       dispatch(registerUser({ name }));
     } else {
       dispatch(loginUser({ name }));
     }
-    setRegisterDialogOpen(false);
+    setAuthDialogOpen(false);
   };
 
-  const handleLogout = () => {
-    dispatch(setLogout());
-  };
+  // Components
+  const Logo = () => (
+    <div className="flex items-center gap-3">
+      <Image
+        alt="fin track logo"
+        src="/fintracklogo.png"
+        width={32}
+        height={32}
+        className="transition-transform duration-300 hover:scale-110"
+      />
+      <h1 className={`${bebas_neue.className} text-xl md:text-2xl tracking-wide text-green-600 dark:text-orange-500`}>
+        Fin Track
+      </h1>
+    </div>
+  );
+
+  const NavigationItems = () => (
+    <div className="space-y-1">
+      {navigationItems.map((item, index) => (
+        <Link href={item.url} key={index} onClick={() => setSidebarOpen(false)}>
+          <motion.div
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: index * 0.1 }}
+            className={`
+              flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200
+              ${pathname === item.url 
+                ? "bg-green-100 dark:bg-orange-500/20 text-green-700 dark:text-orange-500"
+                : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
+              }
+            `}
+          >
+            <item.icon className={pathname === item.url 
+              ? "h-5 w-5 text-green-600 dark:text-orange-500"
+              : "h-5 w-5 text-zinc-500 dark:text-zinc-400"
+            } />
+            <span className={`${poppins.className} ${pathname === item.url ? "font-medium" : ""}`}>
+              {item.title}
+            </span>
+          </motion.div>
+        </Link>
+      ))}
+    </div>
+  );
 
   return (
     <div className="relative">
@@ -143,24 +154,11 @@ const Navbar = ({ bodyRef }: NavbarProps) => {
       >
         <div className="h-full px-4 sm:px-6 flex items-center justify-between">
           <motion.div
-            className={`flex items-center gap-3 ${
-              open ? "opacity-0" : "opacity-100"
-            }`}
-            animate={{ x: open ? -250 : 0 }}
+            className={`flex items-center gap-3 ${sidebarOpen ? "opacity-0" : "opacity-100"}`}
+            animate={{ x: sidebarOpen ? -250 : 0 }}
             transition={{ duration: 0.3 }}
           >
-            <Image
-              alt="fin track logo"
-              src="/fintracklogo.png"
-              width={32}
-              height={32}
-              className="transition-transform duration-300 hover:scale-110"
-            />
-            <h1
-              className={`${bebas_neue.className} text-xl md:text-2xl tracking-wide text-green-600 dark:text-orange-500`}
-            >
-              Fin Track
-            </h1>
+            <Logo />
           </motion.div>
 
           <div className="flex items-center gap-4">
@@ -177,18 +175,19 @@ const Navbar = ({ bodyRef }: NavbarProps) => {
               )}
             </Button>
 
+            {/* Desktop Auth Buttons */}
             <div className="hidden md:flex items-center gap-2">
               {!isLoggedIn ? (
                 <>
                   <Button
                     variant="ghost"
-                    onClick={() => handleRegisterLogin("Login")}
+                    onClick={() => handleAuthAction("Login")}
                     className={`${poppins.className} text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800`}
                   >
                     Login
                   </Button>
                   <Button
-                    onClick={() => handleRegisterLogin("Register")}
+                    onClick={() => handleAuthAction("Register")}
                     className={`${poppins.className} text-sm bg-green-500 hover:bg-green-600 dark:bg-orange-500 dark:hover:bg-orange-600`}
                   >
                     Register
@@ -206,11 +205,10 @@ const Navbar = ({ bodyRef }: NavbarProps) => {
               )}
             </div>
 
-            {/* Hamburger menu always visible */}
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setOpen(!open)}
+              onClick={() => setSidebarOpen(true)}
               className="hover:bg-zinc-100 dark:hover:bg-zinc-800"
             >
               <Menu className="h-5 w-5" />
@@ -221,14 +219,14 @@ const Navbar = ({ bodyRef }: NavbarProps) => {
 
       {/* Sidebar */}
       <AnimatePresence>
-        {open && (
+        {sidebarOpen && (
           <>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-zinc-950/20 dark:bg-zinc-950/40 backdrop-blur-sm z-40"
-              onClick={() => setOpen(false)}
+              onClick={() => setSidebarOpen(false)}
             />
             <motion.div
               initial={{ x: -280 }}
@@ -237,22 +235,20 @@ const Navbar = ({ bodyRef }: NavbarProps) => {
               transition={{ type: "spring", damping: 20 }}
               className="fixed left-0 top-0 h-full w-[280px] z-50"
             >
-              <Sidebar className="h-full bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800">
-                <SidebarHeader className="p-4">
-                  <div className="flex items-center gap-3 mb-6">
-                    <Image
-                      alt="fin track logo"
-                      src="/fintracklogo.png"
-                      width={32}
-                      height={32}
-                      className="transition-transform duration-300 hover:scale-110"
-                    />
-                    <h1
-                      className={`${bebas_neue.className} text-2xl tracking-wide text-green-600 dark:text-orange-500`}
+              <div className="h-full bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800">
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-6">
+                    <Logo />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setSidebarOpen(false)}
+                      className="hover:bg-zinc-100 dark:hover:bg-zinc-800"
                     >
-                      Fin Track
-                    </h1>
+                      <X className="h-5 w-5" />
+                    </Button>
                   </div>
+                  
                   <div className="relative">
                     <Input
                       placeholder="Search..."
@@ -267,84 +263,56 @@ const Navbar = ({ bodyRef }: NavbarProps) => {
                       <Mic className="h-4 w-4" />
                     </Button>
                   </div>
-                </SidebarHeader>
+                </div>
 
-                <SidebarContent className="px-2">
-                  <div className="space-y-1">
-                    {items.map((item, index) => (
-                      <Link
-                        href={item.url}
-                        key={index}
-                        onClick={() => setOpen(false)}
-                      >
-                        <motion.div
-                          initial={{ x: -20, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          transition={{ delay: index * 0.1 }}
-                          className={`
-                            flex items-center gap-3 px-3 py-2 rounded-lg
-                            transition-all duration-200
-                            ${
-                              selectedPath(item.url)
-                                ? "bg-green-100 dark:bg-orange-500/20 text-green-700 dark:text-orange-500"
-                                : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
-                            }
-                          `}
-                        >
-                          <item.icon
-                            className={`h-5 w-5 ${
-                              selectedPath(item.url)
-                                ? "text-green-600 dark:text-orange-500"
-                                : "text-zinc-500 dark:text-zinc-400"
-                            }`}
-                          />
-                          <span
-                            className={`${poppins.className} ${
-                              selectedPath(item.url) ? "font-medium" : ""
-                            }`}
-                          >
-                            {item.title}
-                          </span>
-                        </motion.div>
-                      </Link>
-                    ))}
-                  </div>
-                </SidebarContent>
+                <div className="px-2">
+                  <NavigationItems />
+                </div>
 
-                {isLoggedIn && (
-                  <SidebarFooter className="p-4 border-t border-zinc-200 dark:border-zinc-800">
+                {/* Sidebar Footer */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-zinc-200 dark:border-zinc-800">
+                  {isLoggedIn ? (
                     <Button
                       variant="ghost"
                       className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
-                      onClick={handleLogout}
+                      onClick={() => dispatch(setLogout())}
                     >
                       <LogOut className="mr-2 h-5 w-5" />
                       Logout
                     </Button>
-                  </SidebarFooter>
-                )}
-              </Sidebar>
+                  ) : (
+                    <div className="flex flex-col gap-2 md:hidden">
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleAuthAction("Login")}
+                        className="w-full"
+                      >
+                        Login
+                      </Button>
+                      <Button
+                        onClick={() => handleAuthAction("Register")}
+                        className="w-full bg-green-500 hover:bg-green-600 dark:bg-orange-500 dark:hover:bg-orange-600"
+                      >
+                        Register
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
 
       {/* Auth Dialog */}
-      <AlertDialog
-        open={registerDialogOpen}
-        onOpenChange={setRegisterDialogOpen}
-      >
+      <AlertDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
         <AlertDialogContent className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
           <AlertDialogHeader>
-            <AlertDialogTitle
-              className={`${poppins.className} text-2xl font-semibold`}
-            >
-              {dialogTitle}
+            <AlertDialogTitle className={`${poppins.className} text-2xl font-semibold`}>
+              {authMode}
             </AlertDialogTitle>
-            <AlertDialogDescription
-              className={`${inter.className} text-zinc-600 dark:text-zinc-400`}
-            >
-              {dialogTitle === "Register"
+            <AlertDialogDescription className={`${inter.className} text-zinc-600 dark:text-zinc-400`}>
+              {authMode === "Register"
                 ? "Create your account to get started."
                 : "Welcome back! Please enter your name to continue."}
             </AlertDialogDescription>
@@ -356,8 +324,8 @@ const Navbar = ({ bodyRef }: NavbarProps) => {
               onChange={(e) => setName(e.target.value)}
               className="mb-2"
             />
-            {localError && (
-              <p className="text-sm text-red-500 mt-1">{localError}</p>
+            {authError && (
+              <p className="text-sm text-red-500 mt-1">{authError}</p>
             )}
           </div>
           <AlertDialogFooter>
@@ -366,9 +334,9 @@ const Navbar = ({ bodyRef }: NavbarProps) => {
             </AlertDialogCancel>
             <AlertDialogAction
               className="bg-green-500 hover:bg-green-600 dark:bg-orange-500 dark:hover:bg-orange-600"
-              onClick={handleSubmit}
+              onClick={handleAuthSubmit}
             >
-              {userState.loading ? "Loading..." : dialogTitle}
+              {userState.loading ? "Loading..." : authMode}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

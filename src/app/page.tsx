@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { bebas_neue, poppins, inter } from "@/lib/fonts";
 import { BarChart3, FolderKanban, Wallet, Github } from "lucide-react";
+import Link from "next/link";
 
 const HomePage = () => {
   const fadeIn = {
@@ -69,6 +70,7 @@ const HomePage = () => {
               {...fadeIn}
               transition={{ delay: 0.4 }}
             >
+              <Link href={'https://github.com/Harshal292004/FinTrack'}>
               <Button
                 size="lg"
                 variant="outline"
@@ -77,6 +79,8 @@ const HomePage = () => {
                 <Github className="mr-2 h-4 w-4" />
                 View on GitHub
               </Button>
+              </Link>
+              
             </motion.div>
           </div>
         </motion.div>

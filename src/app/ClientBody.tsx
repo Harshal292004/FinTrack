@@ -1,6 +1,5 @@
 // src/app/ClientBody.tsx
 "use client";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import StoreProvider from "./StoreProvider";
 import { useRef } from "react";
 import { geist_sans, geist_mono } from "@/lib/fonts";
@@ -15,7 +14,6 @@ export default function ClientBody({
 
   return (
     <StoreProvider>
-      <SidebarProvider defaultOpen={false}>
         <body
           ref={bodyRef}
           className={`${geist_sans.variable} ${geist_mono.variable}`}
@@ -24,7 +22,6 @@ export default function ClientBody({
           <Navbar bodyRef={bodyRef} />
           {children}
         </body>
-      </SidebarProvider>
     </StoreProvider>
   );
 }
