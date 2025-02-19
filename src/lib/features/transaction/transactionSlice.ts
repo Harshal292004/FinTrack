@@ -7,9 +7,9 @@ import {
   deleteTransactionAction,
   getTransactionsAction,
 } from "../../../../actions/transaction.actions"
-import type { TTransaction } from "../../../../types";
+import type { ITransaction } from "../../../../types";
 export interface TransactionState {
-  transaction: TTransaction|null;
+  transaction: ITransaction|null;
   loading: boolean;
   error: string | null;
 }
