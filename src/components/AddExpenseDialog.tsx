@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+// React imports
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+
+// Next imports
 import { useRouter } from "next/navigation";
+
+// Icon imports
 import { Plus, DollarSign } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+// UI imports
+import { Button } from "./ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -27,14 +32,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Poppins, Roboto_Mono, Inter } from "next/font/google";
+
+// Redux hooks for State Management
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+
+// Redux thunks for async calling
 import { addTransaction } from "@/lib/features/transaction/transactionSlice";
 
-const poppins = Poppins({ weight: ["400", "600"], subsets: ["latin"] });
-const robotoMono = Roboto_Mono({ weight: ["400", "600"], subsets: ["latin"] });
-const inter = Inter({ weight: ["400", "500", "600"], subsets: ["latin"] });
+// Font imports
+import { poppins, roboto_mono, inter } from "@/lib/fonts";
 
+// Zod form validation
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 // Zod schema for the expense form.
 const expenseSchema = z.object({
   amount: z
@@ -56,9 +66,12 @@ const expenseSchema = z.object({
 type ExpenseFormValues = z.infer<typeof expenseSchema>;
 
 const AddExpenseDialog = () => {
+  // Routing
   const router = useRouter();
+
+  // Dispatch for add transaction thunk
   const dispatch = useAppDispatch();
-  // We assume your transaction state has a "transaction" field with an _id
+
   const transactionState = useAppSelector((state) => state.transactionReducer);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -72,6 +85,7 @@ const AddExpenseDialog = () => {
     },
   });
 
+  // Handler for managing on submission of the form
   const onSubmit = async (values: ExpenseFormValues) => {
     try {
       const formattedData = {
@@ -79,6 +93,7 @@ const AddExpenseDialog = () => {
         amount: parseFloat(values.amount),
         date: new Date(values.date),
       };
+
       // Dispatch addTransaction if we have a transaction document
       if (transactionState.transaction) {
         dispatch(
@@ -100,29 +115,53 @@ const AddExpenseDialog = () => {
   return (
     <>
       {/* Plus button to open the dialog */}
-      <Plus
-        className="bg-green-500 hover:bg-green-600 dark:bg-orange-500 dark:hover:bg-orange-600 text-white shadow-lg w-16 h-16 fixed bottom-5 right-5 rounded-full transition-all cursor-pointer"
+      <button
         onClick={() => setDialogOpen(true)}
-      />
+        className="
+        fixed bottom-6 right-6
+        p-3 sm:p-4
+        rounded-full
+        bg-green-500 hover:bg-green-600
+        dark:bg-orange-500 dark:hover:bg-orange-600
+        text-white
+        shadow-lg hover:shadow-xl
+        transform hover:scale-105
+        transition-all duration-200
+        cursor-pointer
+        flex items-center justify-center
+      "
+      >
+        <Plus className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
+      </button>
+
       <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <AlertDialogContent className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
           <AlertDialogHeader>
-            <AlertDialogTitle className={`${poppins.className} text-zinc-800 dark:text-zinc-100`}>
+            <AlertDialogTitle
+              className={`${poppins.className} text-zinc-800 dark:text-zinc-100`}
+            >
               Add Transaction
             </AlertDialogTitle>
-            <AlertDialogDescription className={`${inter.className} text-zinc-600 dark:text-zinc-400`}>
+            <AlertDialogDescription
+              className={`${inter.className} text-zinc-600 dark:text-zinc-400`}
+            >
               Enter the transaction details below.
             </AlertDialogDescription>
           </AlertDialogHeader>
           {/* Form integrated into the dialog */}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-4">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-6 p-4"
+            >
               <FormField
                 control={form.control}
                 name="amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className={`${inter.className} text-zinc-700 dark:text-zinc-300`}>
+                    <FormLabel
+                      className={`${inter.className} text-zinc-700 dark:text-zinc-300`}
+                    >
                       Amount
                     </FormLabel>
                     <FormControl>
@@ -130,7 +169,7 @@ const AddExpenseDialog = () => {
                         <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-zinc-400" />
                         <Input
                           placeholder="0.00"
-                          className={`${robotoMono.className} pl-10 bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700`}
+                          className={`${roboto_mono.className} pl-10 bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700`}
                           {...field}
                         />
                       </div>
@@ -145,13 +184,15 @@ const AddExpenseDialog = () => {
                 name="date"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className={`${inter.className} text-zinc-700 dark:text-zinc-300`}>
+                    <FormLabel
+                      className={`${inter.className} text-zinc-700 dark:text-zinc-300`}
+                    >
                       Date
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="date"
-                        className={`${robotoMono.className} bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700`}
+                        className={`${roboto_mono.className} bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700`}
                         {...field}
                       />
                     </FormControl>
@@ -165,7 +206,9 @@ const AddExpenseDialog = () => {
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className={`${inter.className} text-zinc-700 dark:text-zinc-300`}>
+                    <FormLabel
+                      className={`${inter.className} text-zinc-700 dark:text-zinc-300`}
+                    >
                       Category
                     </FormLabel>
                     <FormControl>
@@ -185,7 +228,9 @@ const AddExpenseDialog = () => {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className={`${inter.className} text-zinc-700 dark:text-zinc-300`}>
+                    <FormLabel
+                      className={`${inter.className} text-zinc-700 dark:text-zinc-300`}
+                    >
                       Description
                     </FormLabel>
                     <FormControl>

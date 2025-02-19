@@ -1,9 +1,19 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Poppins, Roboto_Mono, Inter } from "next/font/google";
+
+// React imports 
+import { useEffect, useState } from "react";
+
+// Font imports
+import { roboto_mono  ,space_mono, poppins ,inter} from "@/lib/fonts";
+
+// Icon imports 
 import { Edit2, Trash2, DollarSign, Calendar } from "lucide-react";
+
+
+// UI imports 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { LoadingSpinner } from "../LoadingSpinner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,17 +24,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { getTransactions, deleteTransaction, updateTransaction } from "@/lib/features/transaction/transactionSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { useRouter } from "next/navigation";
 
-const poppins = Poppins({ weight: ["400", "600"], subsets: ["latin"] });
-const robotoMono = Roboto_Mono({ weight: ["400", "600"], subsets: ["latin"] });
-const inter = Inter({ weight: ["400", "500", "600"], subsets: ["latin"] });
+// Add Expense UI 
+import AddExpenseDialog from "../AddExpenseDialog";
+
+
+// Redux for state management 
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+// Redux thunks for transaction manipulation
+import { getTransactions, deleteTransaction, updateTransaction } from "@/lib/features/transaction/transactionSlice";
 
 const ExpensesPage = () => {
+  // Dispatch for transaction management 
   const dispatch = useAppDispatch();
-  const router = useRouter();
+
+  // States of user and transaction
   const userState = useAppSelector((state) => state.userReducer);
   const transactionState = useAppSelector((state) => state.transactionReducer);
 
@@ -62,16 +76,10 @@ const ExpensesPage = () => {
     }
   }, [transactionState.transaction]);
 
-  // Early returns for error/loading/no data
-  if (userState.error) {
-    return <div>Error: {userState.error}</div>;
-  }
   if (userState.loading) {
-    return <div>Loading....</div>;
+    return <LoadingSpinner></LoadingSpinner>
   }
-  if (!transactions || transactions.length === 0) {
-    return <div>No transactions found.</div>;
-  }
+  
 
   // Delete handler: open delete dialog for selected transaction
   const handleDelete = (index: number) => {
@@ -123,8 +131,29 @@ const ExpensesPage = () => {
     }
   };
 
+
+  // If you don't have any transaction this page will be loaded 
+  if (!transactions || transactions.length === 0) {
+    return (
+    <div className="p-6 max-w-4xl mx-auto mt-20">
+      <div className={`${poppins.className} mb-6`}>
+        <h1 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-100">Expenses</h1>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          Track and manage your financial transactions
+        </p>
+      </div>
+      <div className={`${space_mono}  justify-center items-center w-full`}> No Transactions Found ... </div>
+      <AddExpenseDialog></AddExpenseDialog>
+    </div>
+    )
+  }
+
   return (
     <div className="p-6 max-w-4xl mx-auto mt-20">
+
+      {/* Add Expense Dialog */}
+      <AddExpenseDialog></AddExpenseDialog>
+
       <div className={`${poppins.className} mb-6`}>
         <h1 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-100">Expenses</h1>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -148,7 +177,7 @@ const ExpensesPage = () => {
                       }`}
                     />
                     <span
-                      className={`${robotoMono.className} text-lg font-semibold ${
+                      className={`${roboto_mono.className} text-lg font-semibold ${
                         transaction.amount >= 0 ? "text-green-600 dark:text-green-400" : "text-red-500 dark:text-red-400"
                       }`}
                     >
@@ -160,7 +189,7 @@ const ExpensesPage = () => {
                   </p>
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-zinc-400" />
-                    <span className={`${robotoMono.className} text-xs text-zinc-500 dark:text-zinc-400`}>
+                    <span className={`${roboto_mono.className} text-xs text-zinc-500 dark:text-zinc-400`}>
                       {new Date(transaction.date).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "short",

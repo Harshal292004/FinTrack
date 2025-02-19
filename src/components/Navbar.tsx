@@ -3,13 +3,12 @@
 import { useCallback, useState } from "react";
 
 // Font imports
-import { bebas_neue, poppins, inter } from "@/lib/fonts";
+import { poppins, inter } from "@/lib/fonts";
 
 // ANimation imports
 import { motion, AnimatePresence } from "framer-motion";
 
 // Next imports
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -23,8 +22,7 @@ import {
   Search,
   Mic,
   X,
-  Loader2,
-  AlertCircle,
+  Loader2
 } from "lucide-react";
 
 // Component imports
@@ -41,19 +39,21 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+
+import { LoadingSpinner } from "./LoadingSpinner";
+import { ErrorMessage } from "./ErrorMessage";
 
 // Redux hooks for state management
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
-// Redux thunks for async calling 
+// Redux thunks for async calling
 import {
   registerUser,
   loginUser,
   setLogout,
 } from "@/lib/features/user/userSlice";
 
-// Zod for input validation 
+// Zod for input validation
 import { z } from "zod";
 
 // Zod Schema
@@ -66,6 +66,8 @@ import { NAVIGATION_ITEMS } from "@/lib/constants";
 
 // Navbar input interface
 import { INavbarProps } from "../../types";
+
+import { Logo } from "./Logo";
 
 const Navbar = ({ bodyRef }: INavbarProps) => {
   // Dispatch for login and registration
@@ -84,7 +86,7 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"Register" | "Login">("Register");
 
-  // Handlers
+  // Handle Dark Mode Toggle
   const toggleDarkMode = useCallback(() => {
     if (bodyRef.current) {
       bodyRef.current.classList.toggle("dark");
@@ -92,6 +94,7 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
     }
   }, [bodyRef]);
 
+  // Handle Auth Action
   const handleAuthAction = (mode: "Register" | "Login") => {
     setAuthMode(mode);
     setAuthError("");
@@ -99,6 +102,7 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
     setAuthDialogOpen(true);
   };
 
+  // Handle Auth Submit
   const handleAuthSubmit = () => {
     const result = nameSchema.safeParse({ name });
     if (!result.success) {
@@ -114,37 +118,7 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
     setAuthDialogOpen(false);
   };
 
-  // Components
-  const Logo = () => (
-    <div className="flex items-center gap-3">
-      <Image
-        alt="fin track logo"
-        src="/fintracklogo.png"
-        width={32}
-        height={32}
-        className="transition-transform duration-300 hover:scale-110"
-      />
-      <h1
-        className={`${bebas_neue.className} text-xl md:text-2xl tracking-wide text-green-600 dark:text-orange-500`}
-      >
-        Fin Track
-      </h1>
-    </div>
-  );
-
-  const LoadingSpinner = () => (
-    <div className="flex items-center justify-center">
-      <Loader2 className="h-5 w-5 animate-spin text-green-500 dark:text-orange-500" />
-    </div>
-  );
-
-  const ErrorMessage = ({ message }: { message: string }) => (
-    <Alert variant="destructive" className="mt-4">
-      <AlertCircle className="h-4 w-4" />
-      <AlertDescription>{message}</AlertDescription>
-    </Alert>
-  );
-
+  // Navigation Items
   const NavigationItems = () => (
     <div className="space-y-1">
       {NAVIGATION_ITEMS.map((item, index) => (
@@ -275,10 +249,7 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
             exit={{ opacity: 0, y: -20 }}
             className="fixed top-24 right-4 z-50"
           >
-            <Alert variant="destructive" className="max-w-md">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{userState.error}</AlertDescription>
-            </Alert>
+            <ErrorMessage message={userState.error}></ErrorMessage>
           </motion.div>
         )}
       </AnimatePresence>
@@ -336,21 +307,37 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
                 </div>
 
                 {/* Sidebar Footer */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-zinc-200 dark:border-zinc-800">
+                <div className="absolute bottom-0 left-0 right-0 p-4 ">
+                  
                   {isLoggedIn ? (
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
-                      onClick={() => dispatch(setLogout())}
-                      disabled={userState.loading}
-                    >
-                      {userState.loading ? (
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      ) : (
-                        <LogOut className="mr-2 h-5 w-5" />
-                      )}
-                      {userState.loading ? "Logging out..." : "Logout"}
-                    </Button>
+                       <motion.button
+                       disabled={userState.loading}
+                       onClick={() => dispatch(setLogout())}
+                       initial={{ x: -20, opacity: 0 }}
+                       animate={{ x: 0, opacity: 1 }}
+                       transition={{ delay: 0.1 }}
+                       className={`
+                         w-full
+                         flex justify-center items-center gap-2 
+                         px-4 py-2 
+                         rounded-lg
+                         transition-all duration-200
+                         ${userState.loading 
+                           ? 'opacity-70 cursor-not-allowed' 
+                           : 'hover:bg-red-100 dark:hover:bg-red-500/20'
+                         }
+                         bg-white dark:bg-zinc-800
+                         text-red-600 dark:text-red-400
+                         ${poppins.className}
+                       `}
+                     >
+                       {userState.loading ? (
+                         <Loader2 className="h-5 w-5 animate-spin" />
+                       ) : (
+                         <LogOut className="h-5 w-5" />
+                       )}
+                       <span>{userState.loading ? "Logging out..." : "Logout"}</span>
+                     </motion.button>
                   ) : (
                     <div className="flex flex-col gap-2 md:hidden">
                       <Button
@@ -385,7 +372,7 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
       </AnimatePresence>
 
       {/* Auth Dialog */}
-      <AlertDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
+      <AlertDialog  open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
         <AlertDialogContent className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
           <AlertDialogHeader>
             <AlertDialogTitle
@@ -409,23 +396,21 @@ const Navbar = ({ bodyRef }: INavbarProps) => {
               className="mb-2"
               disabled={userState.loading}
             />
-            {authError && (
-              <ErrorMessage message={authError} />
-            )}
-            {userState.error && (
-              <ErrorMessage message={userState.error} />
-            )}
+            {authError && <ErrorMessage message={authError} />}
+            {userState.error && <ErrorMessage message={userState.error} />}
             {userState.loading && (
               <div className="mt-4">
                 <LoadingSpinner />
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center mt-2">
-                  {authMode === "Register" ? "Creating your account..." : "Logging you in..."}
+                  {authMode === "Register"
+                    ? "Creating your account..."
+                    : "Logging you in..."}
                 </p>
               </div>
             )}
           </div>
           <AlertDialogFooter>
-            <AlertDialogCancel 
+            <AlertDialogCancel
               className="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700"
               disabled={userState.loading}
             >

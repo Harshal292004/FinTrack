@@ -4,7 +4,7 @@ import { Poppins, Roboto_Mono, Inter } from "next/font/google";
 import { RecentTransactions } from './RecentTransactions';
 import { MonthlExpenseChart } from './MonthlyExpenseChart';
 import { Button } from '../ui/button';
-import AddExpenseButton from '../AddExpenseButton';
+import AddExpenseButton from '../AddExpenseDialog';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, TrendingUp, Plus } from 'lucide-react';
 

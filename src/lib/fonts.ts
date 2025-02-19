@@ -5,6 +5,7 @@ import {
   Roboto_Mono,
   Bebas_Neue,
   Inter,
+  Space_Mono,
 } from "next/font/google";
 
 const geist_sans = Geist({
@@ -36,4 +37,11 @@ const bebas_neue = Bebas_Neue({
   subsets: ["latin"],
 });
 
-export { geist_mono, geist_sans, inter, poppins, roboto_mono, bebas_neue };
+const space_mono= Space_Mono(
+  {
+    weight: ['400','700'],
+    subsets:['latin']
+  }
+)
+
+export { geist_mono, geist_sans, inter, poppins, roboto_mono, bebas_neue ,space_mono};
